@@ -8,35 +8,15 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   
     tl.from(
-      ".menu-link, .btn",
+      ".art-grid-item",
       {
         opacity: 0,
         y: 60,
-        stagger: 0.05,
+        stagger: 0.1,
         duration: 0.75,
         ease: "power1.inOut",
       },
-      "<",
-    );
-  
-    tl.to(
-      ".video-preview",
-      {
-        duration: 1,
-        height: "200px",
-        ease: "power2.out",
-      },
-      "<",
-    );
-  
-    tl.to(
-      ".menu-divider",
-      {
-        duration: 2,
-        width: "100%",
-        ease: "power4.out",
-      },
-      "<",
+      "<"
     );
   
     function openMenu() {
@@ -50,11 +30,9 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   
     document.querySelector(".menu-open-btn").addEventListener("click", openMenu);
-    document
-      .querySelector(".menu-close-btn")
-      .addEventListener("click", closeMenu);
+    document.querySelector(".menu-close-btn").addEventListener("click", closeMenu);
     tl.reverse();
-  });
+});
    // GSAP animation for grid items
    gsap.from(".grid-item", {
     opacity: 0,
