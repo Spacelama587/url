@@ -46,8 +46,8 @@ nav {
     color: var(--color-menu-text);
 }
 .menu-toggle-circle {
-    width: 60px;
-    height: 60px;
+    width: 55px;
+    height: 55px;
     background: var(--highlight-color);
     border-radius: 50%;
     position: relative;
