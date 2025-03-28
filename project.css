@@ -68,3 +68,23 @@
         grid-template-columns: 1fr;
     }
 }
+
+.whatsapp {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    transition: transform 0.3s ease;
+}
+
+.whatsapp img {
+    width: 4em;
+    padding: 10px;
+    background-color:rgba(236, 231, 238, 0.25); /* WhatsApp green background */
+    border-radius: 50%; /* Circular background */
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1); /* Subtle shadow */
+}
+
+.whatsapp:hover {
+    transform: scale(1.1); /* Slight zoom effect on hover */
+}

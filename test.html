@@ -1,9 +1,8 @@
-<!-- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Belinda - Portfolio</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -16,9 +15,8 @@
             --color-menu-text: #000;
             --color-divider: #000000;
             --transition-speed: 0.4s;
+            --highlight-color: #ff69b4;
         }
-
-      
 
         nav {
             position: fixed;
@@ -28,14 +26,8 @@
             justify-content: space-between;
             padding: 2em;
             color: black;
-            z-index: 0;
+            z-index: 1001;
         }
-
-        .menu-open-btn {
-            cursor: pointer;
-            font-weight: bold;
-        }
-
         .menu-overlay {
             position: fixed;
             top: 0;
@@ -48,17 +40,68 @@
             display: flex;
             flex-direction: column;
         }
-
+        
         .menu-nav {
             display: flex;
             justify-content: space-between;
             padding: 2em;
             color: var(--color-menu-text);
         }
-
-        .menu-close-btn {
+        .menu-toggle-circle {
+            width: 80px;
+            height: 80px;
+            background: var(--highlight-color);
+            border-radius: 50%;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             cursor: pointer;
-            font-weight: bold;
+            transition: all 0.3s ease;
+            z-index: 1002;
+        }
+
+        .menu-toggle-circle:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(255,105,180,0.5);
+        }
+
+        .menu-toggle-circle .dot {
+            width: 10px;
+            height: 10px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            transition: all 0.5s ease;
+        }
+
+        .menu-toggle-circle .inner-circle {
+            border: 12px solid white;
+            background: transparent;
+            border-radius: 50%;
+            position: absolute;
+            width: 0;
+            height: 0;
+            opacity: 0;
+            transition: all 0.5s ease;
+        }
+
+        .menu-toggle-circle.active .dot {
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(0);
+        }
+
+        .menu-toggle-circle.active .inner-circle {
+            width: 50px;
+            height: 50px;
+            opacity: 1;
+        }
+
+        .menu-toggle-circle.active {
+            transform: rotate(360deg);
         }
 
         .art-section {
@@ -67,14 +110,14 @@
             overflow: hidden;
             position: relative;
         }
-
+        
         .art-column {
             flex: 1;
             display: flex;
             flex-direction: column;
             overflow: hidden;
         }
-
+        
         .section-title {
             padding: 1em;
             text-align: center;
@@ -82,7 +125,7 @@
             font-weight: bold;
             position: relative;
         }
-
+        
         .section-title::after {
             content: '';
             position: absolute;
@@ -93,7 +136,7 @@
             height: 3px;
             background-color: var(--color-menu-text);
         }
-
+        
         .art-grid {
             flex-grow: 1;
             display: grid;
@@ -104,11 +147,11 @@
             scrollbar-width: none;
             -ms-overflow-style: none;
         }
-
+        
         .art-grid::-webkit-scrollbar {
             display: none;
         }
-
+        
         .section-divider {
             position: absolute;
             top: 50%;
@@ -119,7 +162,7 @@
             background-color: var(--color-menu-text);
             opacity: 0.3;
         }
-
+        
         .art-grid-item {
             position: relative;
             overflow: hidden;
@@ -130,22 +173,22 @@
             align-items: center;
             background: rgba(255,255,255,0.1);
         }
-
+        
         .art-grid-item img {
             max-width: 100%;
             max-height: 100%;
             object-fit: contain;
             transition: transform var(--transition-speed) ease;
         }
-
+        
         .art-grid-item:hover {
             transform: scale(1.05);
         }
-
+        
         .art-grid-item:hover img {
             transform: scale(1.02);
         }
-
+        
         .art-title {
             position: absolute;
             visibility: hidden;
@@ -160,16 +203,16 @@
             opacity: 0;
             transition: opacity var(--transition-speed) ease;
         }
-
+        
         .art-grid-item:hover .art-title {
             opacity: 1;
         }
-
+        
         @media (max-width: 768px) {
             .art-section {
                 flex-direction: column;
             }
-
+        
             .section-divider {
                 width: 80%;
                 height: 3px;
@@ -177,147 +220,142 @@
                 left: 50%;
                 transform: translate(-50%, -50%);
             }
-
+        
             .art-grid {
                 grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
             }
-
+        
             .section-title {
                 font-size: 1.5em;
             }
         }
+        
     </style>
 </head>
 <body>
-    <nav>
-        <div class="logo">Belinda</div>
-        <div class="menu-open-btn">Menu</div>
-    </nav>
+    <div>
+        <nav>
+            <div class="logo">Belinda</div>
+            <div class="menu-toggle-circle">
+                <div class="dot"></div>
+                <div class="inner-circle"></div>
+            </div>
+        </nav>
 
-    <div class="menu-overlay">
-        <div class="menu-nav">
-            <div class="menu-logo">Belinda</div>
-            <div class="menu-close-btn">Close</div>
-        </div>
-
-        <div class="art-section">
-            <div class="art-column">
-                <div class="section-title">Commercial Art</div>
-                <div class="art-grid commercial-art">
-                    <div class="art-grid-item">
-                        <img src="./1.webp" alt="Commercial Art 1">
-                        <div class="art-title">Campaign 2024</div>
-                    </div>
-                    <div class="art-grid-item">
-                        <img src="./2.webp" alt="Commercial Art 2">
-                        <div class="art-title">Brand Identity</div>
-                    </div>
-                    <div class="art-grid-item">
-                        <img src="./3.webp" alt="Commercial Art 3">
-                        <div class="art-title">Product Design</div>
-                    </div>
-                    <div class="art-grid-item">
-                        <img src="./4.webp" alt="Commercial Art 4">
-                        <div class="art-title">Marketing Visuals</div>
-                    </div>
-                </div>
+        <div class="menu-overlay">
+            <div class="menu-nav">
+         
             </div>
 
-            <div class="section-divider"></div>
-
-            <div class="art-column">
-                <div class="section-title">Fine Art</div>
-                <div class="art-grid fine-art">
-                    <div class="art-grid-item">
-                        <img src="./6.webp" alt="Fine Art 1">
-                        <div class="art-title">Urban Landscapes</div>
+            <div class="art-section">
+                <div class="art-column">
+                    <div class="section-title">Commercial Art</div>
+                    <div class="art-grid commercial-art">
+                        <div class="art-grid-item">
+                            <img src="./1.webp" alt="Commercial Art 1">
+                            <div class="art-title">Campaign 2024</div>
+                        </div>
+                        <div class="art-grid-item">
+                            <img src="./2.webp" alt="Commercial Art 2">
+                            <div class="art-title">Brand Identity</div>
+                        </div>
+                        <div class="art-grid-item">
+                            <img src="./3.webp" alt="Commercial Art 3">
+                            <div class="art-title">Product Design</div>
+                        </div>
+                        <div class="art-grid-item">
+                            <img src="./4.webp" alt="Commercial Art 4">
+                            <div class="art-title">Marketing Visuals</div>
+                        </div>
                     </div>
-                    <div class="art-grid-item">
-                        <img src="./7.webp" alt="Fine Art 2">
-                        <div class="art-title">Abstract Expressions</div>
-                    </div>
-                    <div class="art-grid-item">
-                        <img src="./8.webp" alt="Fine Art 3">
-                        <div class="art-title">Minimalist Series</div>
-                    </div>
-                    <div class="art-grid-item">
-                        <img src="./9.webp" alt="Fine Art 4">
-                        <div class="art-title">Color Studies</div>
+                </div>
+    
+                <div class="section-divider"></div>
+    
+                <div class="art-column">
+                    <div class="section-title">Fine Art</div>
+                    <div class="art-grid fine-art">
+                        <div class="art-grid-item">
+                            <img src="./6.webp" alt="Fine Art 1">
+                            <div class="art-title">Urban Landscapes</div>
+                        </div>
+                        <div class="art-grid-item">
+                            <img src="./7.webp" alt="Fine Art 2">
+                            <div class="art-title">Abstract Expressions</div>
+                        </div>
+                        <div class="art-grid-item">
+                            <img src="./8.webp" alt="Fine Art 3">
+                            <div class="art-title">Minimalist Series</div>
+                        </div>
+                        <div class="art-grid-item">
+                            <img src="./9.webp" alt="Fine Art 4">
+                            <div class="art-title">Color Studies</div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             let tl = gsap.timeline({ paused: true });
           
             tl.to(".menu-overlay", {
-              duration: 1,
-              clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)",
-              ease: "power2.out",
+                duration: 1,
+                clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)",
+                ease: "power2.out",
             });
           
+            // Animate art grid items
             tl.from(
-              ".art-grid-item",
-              {
-                opacity: 0,
-                y: 60,
-                stagger: 0.1,
-                duration: 0.75,
-                ease: "power1.inOut",
-              },
-              "<"
+                ".art-grid-item",
+                {
+                    opacity: 0,
+                    y: 60,
+                    stagger: 0.1,
+                    duration: 0.75,
+                    ease: "power1.inOut",
+                },
+                "<"
+            );
+        
+            // Add animation for section titles and divider
+            tl.from(
+                ".section-title, .section-divider",
+                {
+                    opacity: 0,
+                    y: 30,
+                    stagger: 0.2,
+                    duration: 0.5,
+                    ease: "power1.inOut",
+                },
+                "<"
             );
           
             function openMenu() {
-              document.querySelector(".menu-overlay").style.pointerEvents = "all";
-              tl.play();
+                document.querySelector(".menu-overlay").style.pointerEvents = "all";
+                document.querySelector(".menu-toggle-circle").classList.add('active');
+                tl.play();
             }
           
             function closeMenu() {
-              document.querySelector(".menu-overlay").style.pointerEvents = "none";
-              tl.reverse();
+                document.querySelector(".menu-overlay").style.pointerEvents = "none";
+                document.querySelector(".menu-toggle-circle").classList.remove('active');
+                tl.reverse();
             }
           
-            document.querySelector(".menu-open-btn").addEventListener("click", openMenu);
-            document.querySelector(".menu-close-btn").addEventListener("click", closeMenu);
+            const menuToggleCircle = document.querySelector('.menu-toggle-circle');
+            menuToggleCircle.addEventListener('click', function() {
+                if (menuToggleCircle.classList.contains('active')) {
+                    closeMenu();
+                } else {
+                    openMenu();
+                }
+            });
+          
             tl.reverse();
         });
     </script>
-</body>
-</html> -->
-
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Life is Too Short</title>
-    <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            font-family: Arial, sans-serif;
-        }
-        h1 {
-            font-weight: bold;
-            font-size: 2.5rem;
-            text-align: center;
-        }
-        .special-word {
-            color: #d3d3d3;
-        }
-    </style>
-</head>
-<body>
-    <h1>
-        Life is too short to go <span class="special-word">unnoticed</span>
-    </h1>
 </body>
 </html>
