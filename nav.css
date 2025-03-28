@@ -179,3 +179,19 @@ nav {
         font-size: 1.5em;
     }
 }
+
+
+.heading{
+    margin-top: 5em;
+}
+
+h1 {
+    font-weight: bold;
+    font-size: 4.5rem;
+    text-align: center;
+    text-align: left;
+    margin-left: 1em;
+}
+.special-word {
+    color: #d3d3d3;
+}
