@@ -151,10 +151,10 @@ nav.nav-hidden {
 }
 
 .section-title {
-    padding: 1em;
+    /* padding: 1em; */
     text-align: center;
-    font-size: 2em;
-    font-weight: bold;
+    font-size: 3em;
+    font-weight: 700;
     position: relative;
 }
 
@@ -165,7 +165,7 @@ nav.nav-hidden {
     left: 50%;
     transform: translateX(-50%);
     width: 100px;
-    height: 3px;
+    height: 2.5px;
     background-color: var(--color-menu-text);
 }
 
@@ -246,11 +246,12 @@ nav.nav-hidden {
     }
 
     .section-divider {
-        width: 80%;
+        /* width: 80%;
         height: 3px;
         top: 50%;
         left: 50%;
-        transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%); */
+        visibility: hidden;
     }
 
     .art-grid {
