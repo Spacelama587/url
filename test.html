@@ -2,341 +2,425 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Grid with Smooth Filters</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --color-menu-overlay: #eae9e4;
-            --color-menu-text: #000;
-            --color-divider: #000000;
-            --transition-speed: 0.4s;
-            --highlight-color: #ff69b4;
-        }
-
-        nav {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            padding: 2em;
-            color: black;
-            z-index: 1001;
-        }
-
-        .menu-toggle-circle {
-            width: 80px;
-            height: 80px;
-            background: var(--highlight-color);
-            border-radius: 50%;
+        /* Existing CSS */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 16px;
+            margin: 7em;
             position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            z-index: 1002;
         }
 
-        .menu-toggle-circle:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 15px rgba(255,105,180,0.5);
-        }
-
-        .menu-toggle-circle .dot {
-            width: 10px;
-            height: 10px;
-            background: white;
-            border-radius: 50%;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            transition: all 0.5s ease;
-        }
-
-        .menu-toggle-circle .inner-circle {
-            border: 12px solid white;
-            background: transparent;
-            border-radius: 50%;
-            position: absolute;
-            width: 0;
-            height: 0;
-            opacity: 0;
-            transition: all 0.5s ease;
-        }
-
-        .menu-toggle-circle.active .dot {
-            opacity: 0;
-            transform: translate(-50%, -50%) scale(0);
-        }
-
-        .menu-toggle-circle.active .inner-circle {
-            width: 50px;
-            height: 50px;
-            opacity: 1;
-        }
-
-        .menu-toggle-circle.active {
-            transform: rotate(360deg);
-        }
-
-        .art-section {
-            display: flex;
-            height: calc(100vh - 100px);
+        .grid-item {
+            position: relative;
+            aspect-ratio: 1 / 1;
             overflow: hidden;
-            position: relative;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.8s forwards;
         }
-        
-        .art-column {
-            flex: 1;
+
+        .grid-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .grid-item:hover img {
+            transform: scale(1.05);
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 20, 147, 0.7);
             display: flex;
             flex-direction: column;
-            overflow: hidden;
-        }
-        
-        .section-title {
-            padding: 1em;
-            text-align: center;
-            font-size: 2em;
-            font-weight: bold;
-            position: relative;
-        }
-        
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: 0.3em;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100px;
-            height: 3px;
-            background-color: var(--color-menu-text);
-        }
-        
-        .art-grid {
-            flex-grow: 1;
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 1em;
-            padding: 1em;
-            overflow-y: auto;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
-        }
-        
-        .art-grid::-webkit-scrollbar {
-            display: none;
-        }
-        
-        .section-divider {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 3px;
-            height: 80%;
-            background-color: var(--color-menu-text);
-            opacity: 0.3;
-        }
-        
-        .art-grid-item {
-            position: relative;
-            overflow: hidden;
-            border-radius: 8px;
-            transition: transform var(--transition-speed) ease;
-            display: flex;
             justify-content: center;
             align-items: center;
-            background: rgba(255,255,255,0.1);
-        }
-        
-        .art-grid-item img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-            transition: transform var(--transition-speed) ease;
-        }
-        
-        .art-grid-item:hover {
-            transform: scale(1.05);
-        }
-        
-        .art-grid-item:hover img {
-            transform: scale(1.02);
-        }
-        
-        .art-title {
-            position: absolute;
-            visibility: hidden;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: rgba(0, 0, 0, 0.6);
-            color: white;
-            padding: 0.5em;
-            text-align: center;
-            font-weight: bold;
             opacity: 0;
-            transition: opacity var(--transition-speed) ease;
+            transition: opacity 0.5s ease;
         }
-        
-        .art-grid-item:hover .art-title {
+
+        .grid-item:hover .overlay {
             opacity: 1;
         }
-        
-        @media (max-width: 768px) {
-            .art-section {
-                flex-direction: column;
+
+        .overlay-content {
+            text-align: center;
+            color: white;
+            padding: 0 20px;
+            transform: translateY(20px);
+            transition: transform 0.5s ease;
+        }
+
+        .grid-item:hover .overlay-content {
+            transform: translateY(0);
+        }
+
+        .overlay-content h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .overlay-content p {
+            font-size: 1rem;
+        }
+
+        /* Enhanced CSS for filters */
+        .filter-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 3em;
+            gap: 30px;
+        }
+
+        .filter-btn {
+            padding: 10px 25px;
+            background-color: transparent;
+            border: 2px solid rgba(255, 20, 147, 0.3);
+            cursor: pointer;
+            font-size: 17px;
+            border-radius: 50px;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            color: #333;
+            font-weight: 500;
+            letter-spacing: 1px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .filter-btn:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .filter-btn:hover:before {
+            left: 100%;
+        }
+
+        .filter-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(255, 20, 147, 0.2);
+        }
+
+        .filter-btn.active {
+            background-color: rgba(255, 20, 147, 0.8);
+            color: white;
+            border-color: rgba(255, 20, 147, 0.8);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 20, 147, 0.3);
+        }
+
+        /* Advanced animations for grid items */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
             }
-        
-            .section-divider {
-                width: 80%;
-                height: 3px;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-            }
-        
-            .art-grid {
-                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            }
-        
-            .section-title {
-                font-size: 1.5em;
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
         }
-        
+
+        .grid-item {
+            transition: all 1.2s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .grid-item.filtered-out {
+            opacity: 0;
+            transform: scale(0.7) translateY(40px);
+            pointer-events: none;
+        }
+
+        .grid-item.filtered-in {
+            animation: popIn 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes popIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.8) translateY(20px);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.05) translateY(-5px);
+            }
+            70% {
+                transform: scale(0.95) translateY(0);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        /* Apply sequential delays for staggered animation */
+        .grid-item:nth-child(1) { animation-delay: 0.1s; }
+        .grid-item:nth-child(2) { animation-delay: 0.15s; }
+        .grid-item:nth-child(3) { animation-delay: 0.2s; }
+        .grid-item:nth-child(4) { animation-delay: 0.25s; }
+        .grid-item:nth-child(5) { animation-delay: 0.3s; }
+        .grid-item:nth-child(6) { animation-delay: 0.35s; }
+        .grid-item:nth-child(7) { animation-delay: 0.4s; }
+        .grid-item:nth-child(8) { animation-delay: 0.45s; }
+        .grid-item:nth-child(9) { animation-delay: 0.5s; }
+        .grid-item:nth-child(10) { animation-delay: 0.55s; }
+        .grid-item:nth-child(11) { animation-delay: 0.6s; }
+        .grid-item:nth-child(12) { animation-delay: 0.65s; }
+
+        @media (max-width: 768px) {
+            .grid-container {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+                margin: 2em;
+                padding: 10px;
+                margin-top: 7em;
+            }
+
+            .grid-item {
+                aspect-ratio: 1 / 1;
+            }
+
+            .overlay-content h3 {
+                font-size: 1.2rem;
+                margin-bottom: 8px;
+            }
+
+            .overlay-content p {
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .grid-container {
+                grid-template-columns: 1fr;
+                gap: 16px;
+                margin: 1em;
+                padding: 8px;
+                margin-top: 7em;
+            }
+
+            .grid-item {
+                aspect-ratio: 1 / 1;
+            }
+
+            .overlay-content h3 {
+                font-size: 1.1rem;
+            }
+
+            .overlay-content p {
+                font-size: 0.8rem;
+            }
+
+            .filter-container {
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+            }
+        }
     </style>
 </head>
 <body>
-    <div>
-        <nav>
-            <div class="logo">Belinda</div>
-            <div class="menu-toggle-circle">
-                <div class="dot"></div>
-                <div class="inner-circle"></div>
-            </div>
-        </nav>
+    <!-- Filter Buttons -->
+    <div class="filter-container">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="commercial">Commercial</button>
+        <button class="filter-btn" data-filter="fine-art">Fine Art</button>
+    </div>
 
-        <div class="menu-overlay">
-            <div class="menu-nav">
-         
-            </div>
-
-            <div class="art-section">
-                <div class="art-column">
-                    <div class="section-title">Commercial Art</div>
-                    <div class="art-grid commercial-art">
-                        <div class="art-grid-item">
-                            <img src="./1.webp" alt="Commercial Art 1">
-                            <div class="art-title">Campaign 2024</div>
-                        </div>
-                        <div class="art-grid-item">
-                            <img src="./2.webp" alt="Commercial Art 2">
-                            <div class="art-title">Brand Identity</div>
-                        </div>
-                        <div class="art-grid-item">
-                            <img src="./3.webp" alt="Commercial Art 3">
-                            <div class="art-title">Product Design</div>
-                        </div>
-                        <div class="art-grid-item">
-                            <img src="./4.webp" alt="Commercial Art 4">
-                            <div class="art-title">Marketing Visuals</div>
-                        </div>
-                    </div>
+    <!-- Grid Container -->
+    <div class="grid-container">
+        <!-- Grid Items (12 total) with categories assigned -->
+        <div class="grid-item" data-category="commercial">
+            <img src="./2.webp" alt="Grid Image">
+            <div class="overlay">
+                <div class="overlay-content">
+                    <h3>Commercial Project 1</h3>
+                    <p>Description goes here</p>
                 </div>
-    
-                <div class="section-divider"></div>
-    
-                <div class="art-column">
-                    <div class="section-title">Fine Art</div>
-                    <div class="art-grid fine-art">
-                        <div class="art-grid-item">
-                            <img src="./6.webp" alt="Fine Art 1">
-                            <div class="art-title">Urban Landscapes</div>
-                        </div>
-                        <div class="art-grid-item">
-                            <img src="./7.webp" alt="Fine Art 2">
-                            <div class="art-title">Abstract Expressions</div>
-                        </div>
-                        <div class="art-grid-item">
-                            <img src="./8.webp" alt="Fine Art 3">
-                            <div class="art-title">Minimalist Series</div>
-                        </div>
-                        <div class="art-grid-item">
-                            <img src="./9.webp" alt="Fine Art 4">
-                            <div class="art-title">Color Studies</div>
-                        </div>
-                    </div>
+            </div>
+        </div>
+        <div class="grid-item" data-category="fine-art">
+            <img src="./1.webp" alt="Grid Image">
+            <div class="overlay">
+                <div class="overlay-content">
+                    <h3>Fine Art Piece 1</h3>
+                    <p>Description goes here</p>
+                </div>
+            </div>
+        </div>
+        <div class="grid-item" data-category="commercial">
+            <img src="./3.webp" alt="Grid Image">
+            <div class="overlay">
+                <div class="overlay-content">
+                    <h3>Commercial Project 2</h3>
+                    <p>Description goes here</p>
+                </div>
+            </div>
+        </div>
+        <div class="grid-item" data-category="fine-art">
+            <img src="./4.webp" alt="Grid Image">
+            <div class="overlay">
+                <div class="overlay-content">
+                    <h3>Fine Art Piece 2</h3>
+                    <p>Description goes here</p>
+                </div>
+            </div>
+        </div>
+        <div class="grid-item" data-category="commercial">
+            <img src="./6.webp" alt="Grid Image">
+            <div class="overlay">
+                <div class="overlay-content">
+                    <h3>Commercial Project 3</h3>
+                    <p>Description goes here</p>
+                </div>
+            </div>
+        </div>
+        <div class="grid-item" data-category="fine-art">
+            <img src="./7.webp" alt="Grid Image">
+            <div class="overlay">
+                <div class="overlay-content">
+                    <h3>Fine Art Piece 3</h3>
+                    <p>Description goes here</p>
+                </div>
+            </div>
+        </div>
+        <div class="grid-item" data-category="commercial">
+            <img src="./8.webp" alt="Grid Image">
+            <div class="overlay">
+                <div class="overlay-content">
+                    <h3>Commercial Project 4</h3>
+                    <p>Description goes here</p>
+                </div>
+            </div>
+        </div>
+        <div class="grid-item" data-category="fine-art">
+            <img src="./9.webp" alt="Grid Image">
+            <div class="overlay">
+                <div class="overlay-content">
+                    <h3>Fine Art Piece 4</h3>
+                    <p>Description goes here</p>
+                </div>
+            </div>
+        </div>
+        <div class="grid-item" data-category="commercial">
+            <img src="./10.webp" alt="Grid Image">
+            <div class="overlay">
+                <div class="overlay-content">
+                    <h3>Commercial Project 5</h3>
+                    <p>Description goes here</p>
+                </div>
+            </div>
+        </div>
+        <div class="grid-item" data-category="fine-art">
+            <img src="./11.webp" alt="Grid Image">
+            <div class="overlay">
+                <div class="overlay-content">
+                    <h3>Fine Art Piece 5</h3>
+                    <p>Description goes here</p>
+                </div>
+            </div>
+        </div>
+        <div class="grid-item" data-category="commercial">
+            <img src="./13.webp" alt="Grid Image">
+            <div class="overlay">
+                <div class="overlay-content">
+                    <h3>Commercial Project 6</h3>
+                    <p>Description goes here</p>
+                </div>
+            </div>
+        </div>
+        <div class="grid-item" data-category="fine-art">
+            <img src="./16.webp" alt="Grid Image">
+            <div class="overlay">
+                <div class="overlay-content">
+                    <h3>Fine Art Piece 6</h3>
+                    <p>Description goes here</p>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            let tl = gsap.timeline({ paused: true });
-          
-            tl.to(".menu-overlay", {
-                duration: 1,
-                clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)",
-                ease: "power2.out",
-            });
-          
-            // Animate art grid items
-            tl.from(
-                ".art-grid-item",
-                {
-                    opacity: 0,
-                    y: 60,
-                    stagger: 0.1,
-                    duration: 0.75,
-                    ease: "power1.inOut",
-                },
-                "<"
-            );
-        
-            // Add animation for section titles and divider
-            tl.from(
-                ".section-title, .section-divider",
-                {
-                    opacity: 0,
-                    y: 30,
-                    stagger: 0.2,
-                    duration: 0.5,
-                    ease: "power1.inOut",
-                },
-                "<"
-            );
-          
-            function openMenu() {
-                document.querySelector(".menu-overlay").style.pointerEvents = "all";
-                document.querySelector(".menu-toggle-circle").classList.add('active');
-                tl.play();
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get all filter buttons and grid items
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const gridItems = document.querySelectorAll('.grid-item');
+            
+            // Function to apply staggered animation delays to filtered items
+            function applyStaggeredDelays(items) {
+                items.forEach((item, index) => {
+                    item.style.animationDelay = `${0.05 * index}s`;
+                });
             }
-          
-            function closeMenu() {
-                document.querySelector(".menu-overlay").style.pointerEvents = "none";
-                document.querySelector(".menu-toggle-circle").classList.remove('active');
-                tl.reverse();
-            }
-          
-            const menuToggleCircle = document.querySelector('.menu-toggle-circle');
-            menuToggleCircle.addEventListener('click', function() {
-                if (menuToggleCircle.classList.contains('active')) {
-                    closeMenu();
-                } else {
-                    openMenu();
-                }
+
+            // Add click event listeners to filter buttons
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Remove active class from all buttons
+                    filterBtns.forEach(btn => btn.classList.remove('active'));
+                    
+                    // Add active class to clicked button with a subtle animation
+                    this.classList.add('active');
+                    
+                    // Get the filter value
+                    const filterValue = this.getAttribute('data-filter');
+                    
+                    // Collect matching items for staggered animation
+                    const matchingItems = [];
+                    
+                    // Filter the grid items with enhanced animation
+                    gridItems.forEach(item => {
+                        const category = item.getAttribute('data-category');
+                        
+                        // Reset animation classes
+                        item.classList.remove('filtered-in');
+                        
+                        if (filterValue === 'all' || filterValue === category) {
+                            // Remove the filtered-out class with a delay for staggered effect
+                            setTimeout(() => {
+                                item.classList.remove('filtered-out');
+                                // Add a small delay before adding the filtered-in class
+                                setTimeout(() => {
+                                    item.classList.add('filtered-in');
+                                }, 50);
+                            }, 100);
+                            
+                            matchingItems.push(item);
+                        } else {
+                            // Add filtered-out class for items that don't match
+                            item.classList.add('filtered-out');
+                        }
+                    });
+                    
+                    // Apply staggered delays to the filtered-in items
+                    setTimeout(() => {
+                        applyStaggeredDelays(matchingItems);
+                    }, 300);
+                });
             });
-          
-            tl.reverse();
+            
+            // Initial load animation
+            applyStaggeredDelays(gridItems);
         });
     </script>
 </body>

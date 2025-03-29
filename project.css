@@ -10,6 +10,46 @@
     margin: 7em;
 }
 
+.button-container {
+    grid-column: 1 / -1; /* Span across all columns */
+    display: flex;
+    justify-content: right;
+    gap: 10px;
+    margin-bottom: 20px;
+    z-index: 1002;
+}
+
+.filter-button {
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 20, 147, 0.25);
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #ff1493;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 4px 6px rgba(255, 20, 147, 0.1);
+}
+
+.filter-button:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 20, 147, 0.5);
+    box-shadow: 0 4px 8px rgba(255, 20, 147, 0.15);
+}
+
+.filter-button.active {
+    background: rgba(255, 20, 147, 0.4);
+    color: white;
+    border-color: rgba(255, 20, 147, 0.6);
+    box-shadow: 0 6px 10px rgba(255, 20, 147, 0.2);
+}
+
+
+
 .grid-item {
     position: relative;
     aspect-ratio: 1 / 1;
@@ -121,3 +161,4 @@
 .whatsapp:hover {
     transform: scale(1.1); /* Slight zoom effect on hover */
 }
+
