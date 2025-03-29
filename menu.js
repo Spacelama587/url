@@ -99,6 +99,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   
     tl.reverse();
+    
   });
   
   // GSAP animation for grid items
