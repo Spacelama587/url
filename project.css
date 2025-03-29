@@ -33,6 +33,7 @@
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     box-shadow: 0 4px 6px rgba(255, 20, 147, 0.1);
+    font-family: "Audiowide", sans-serif;
 }
 
 .filter-button:hover {
