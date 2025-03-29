@@ -141,6 +141,11 @@
     .overlay-content p {
         font-size: 0.8rem;
     }
+
+    .filter-button {
+        padding: 0.5rem 1rem;
+        letter-spacing: 0.03em;
+    }
 }
 
 .whatsapp {
