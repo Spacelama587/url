@@ -4,6 +4,7 @@
     box-sizing: border-box;
     font-family: "Corinthia", cursive;
     font-weight: 700;
+    -webkit-tap-highlight-color: transparent;
 }
 
 
